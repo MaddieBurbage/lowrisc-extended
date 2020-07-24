@@ -1,9 +1,9 @@
 [submodule "fpga"]
         path = fpga
-        url = https://github.com/lowrisc/lowrisc-fpga.git
+        url = https://github.com/MaddieBurbage/fpga
 [submodule "rocket-chip"]
 	path = rocket-chip
-	url = https://github.com/lowRISC/rocket-chip
+	url = https://github.com/MaddieBurbage/rocket-chip
 [submodule "riscv-linux"]
 	path = riscv-linux
 	url = https://github.com/lowRISC/riscv-linux.git
