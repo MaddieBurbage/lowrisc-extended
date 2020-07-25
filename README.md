@@ -8,7 +8,7 @@ Cambridge Information
 See LICENSE.Cambridge for license details.
 
 See the [documentation](https://www.lowrisc.org/docs/) for build instructions.
-For the lowRISC repository: [lowRISC](https://github.com/lowrisc/lowrisch-chip)
+For the lowRISC repository: [lowRISC](https://github.com/lowrisc/lowrisc-chip)
 
 Git
 ==============================================
