@@ -6,3 +6,9 @@ project/target
 riscv/
 tools/
 lib/
+
+.metals/
+.bloop/
+.ammonite/
+metals.sbt
+.vscode/

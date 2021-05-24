@@ -149,6 +149,11 @@ module chip_top
    input wire         GPIO_SW_N,
    input wire         GPIO_SW_S,
 
+   // 7-segment display (Custom modification for the light debugger)
+   output wire [7:0]  CA,
+   output wire [7:0]  AN,
+
+
    //keyboard
    inout wire         PS2_CLK,
    inout wire         PS2_DATA,
@@ -205,7 +210,7 @@ reg phy_emdio_i, io_emdio_o, io_emdio_t;
 logic mig_sys_clk, clk_pixel;
 
    // the NASTI bus for off-FPGA DRAM, converted to High frequency
-   nasti_channel   
+   nasti_channel
      #(
        .ID_WIDTH    ( `MEM_ID_WIDTH   ),
        .ADDR_WIDTH  ( `MEM_ADDR_WIDTH ),
@@ -381,7 +386,7 @@ logic mig_sys_clk, clk_pixel;
       );
    assign clk_locked = clk_locked_wiz & rst_top;
    assign sys_rst = ~rstn;
-      
+
  `endif //  `ifdef NEXYS4_COMMON
 
    // DRAM controller
@@ -503,9 +508,9 @@ logic mig_sys_clk, clk_pixel;
    assign clk_locked = !rst_top;
    assign clk_locked_wiz = !rst_top;
    assign mig_sys_clk = clk_p;
-   assign clk_pixel = clk_p;   
+   assign clk_pixel = clk_p;
    assign sys_rst = rst_top;
-   
+
    nasti_ram_sim
      #(
        .ID_WIDTH     ( `MEM_ID_WIDTH    ),
@@ -569,7 +574,7 @@ logic mig_sys_clk, clk_pixel;
 
    assign bram_ar_addr = mmio_master_nasti.ar_addr ;
    assign bram_aw_addr = mmio_master_nasti.aw_addr ;
-   
+
    reg   [BRAM_WIDTH-1:0]         ram [0 : BRAM_LINE-1];
    logic [BRAM_ADDR_BLK_BITS-1:0] ram_block_addr, ram_block_addr_delay;
    logic [BRAM_ADDR_LSB_BITS-1:0] ram_lsb_addr, ram_lsb_addr_delay;
@@ -703,7 +708,7 @@ logic mig_sys_clk, clk_pixel;
    // Human interface and miscellaneous devices
 
 `ifdef ADD_HID
-   
+
    wire                        hid_rst, hid_clk, hid_en;
    wire [7:0]                  hid_we;
    wire [17:0]                 hid_addr;
@@ -760,7 +765,7 @@ logic mig_sys_clk, clk_pixel;
       .bram_wrdata_a   ( hid_wrdata                ),
       .bram_rddata_a   ( hid_rddata                )
       );
-  
+
    always @(posedge clk_rmii)
      begin
         phy_emdio_i <= io_emdio_i;
@@ -770,7 +775,7 @@ logic mig_sys_clk, clk_pixel;
 
    IOBUF #(
       .DRIVE(12), // Specify the output drive strength
-      .IBUF_LOW_PWR("TRUE"),  // Low Power - "TRUE", High Performance = "FALSE" 
+      .IBUF_LOW_PWR("TRUE"),  // Low Power - "TRUE", High Performance = "FALSE"
       .IOSTANDARD("DEFAULT"), // Specify the I/O standard
       .SLEW("SLOW") // Specify the output slew rate
    ) IOBUF_inst (
@@ -786,7 +791,7 @@ logic mig_sys_clk, clk_pixel;
     .IS_C_INVERTED(1'b0),
     .IS_D1_INVERTED(1'b0),
     .IS_D2_INVERTED(1'b0),
-    .SRTYPE("SYNC")) 
+    .SRTYPE("SYNC"))
     refclk_inst
        (.C(eth_refclk),
         .CE(1'b1),
@@ -795,7 +800,7 @@ logic mig_sys_clk, clk_pixel;
         .Q(o_erefclk),
         .R(1'b0),
         .S( ));
-    
+
     always @(posedge clk_rmii_quad)
         begin
         o_etxd = eth_txd;
@@ -836,7 +841,7 @@ logic mig_sys_clk, clk_pixel;
       );
 
    assign rts = cts;
-   
+
 `else // !`ifdef ADD_HID
 
    assign hid_irq = 1'b0;
@@ -869,7 +874,7 @@ logic mig_sys_clk, clk_pixel;
    wire CAPTURE, DRCK, RESET, RUNTEST, SEL, SHIFT, TCK, TDI, TMS, UPDATE, TDO, TCK_unbuf;
 
    /* This block is just used to feed the JTAG clock into the parts of Rocket that need it */
-      
+
    BSCANE2 #(
       .JTAG_CHAIN(2)  // Value for USER command.
    )
@@ -897,7 +902,7 @@ logic mig_sys_clk, clk_pixel;
       .O(TCK), // 1-bit output: Clock output
       .I(TCK_unbuf)  // 1-bit input: Clock input
    );
-  
+
   /* DMI interface tie-off */
   wire  ExampleRocketSystem_debug_ndreset;
   wire  ExampleRocketSystem_debug_dmactive;
@@ -911,9 +916,14 @@ logic mig_sys_clk, clk_pixel;
           2'b11: io_reset_vector = 32'h80200000;
         endcase // casez ()
      end
-   
+
+   /* Adding CA and AN is a custom modification for the Light Debugger */
    ExampleRocketSystem Rocket
      (
+  `ifdef ADD_HID
+      .io_CA               ( CA                      ),
+      .io_AN               ( AN                      ),
+  `endif
       .debug_systemjtag_jtag_TCK(TCK),
       .debug_systemjtag_jtag_TMS(TMS),
       .debug_systemjtag_jtag_TDI(TDI),
@@ -1060,5 +1070,5 @@ logic mig_sys_clk, clk_pixel;
       .clock                         ( clk                                  ),
       .reset                         ( sys_rst                              )
       );
-   
+
 endmodule // chip_top
