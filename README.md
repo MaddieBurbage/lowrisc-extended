@@ -12,7 +12,7 @@ Our extension of lowRISC served several purposes:
 
 Accelerators
 ==============================================
-Our devices are contained in the rocket-chip submodule, in [src/main/scala/tile/](https://github.com/MaddieBurbage/rocket-chip/tree/d8f0bc6f1cfb2d93839948a754ddcd151bda09c5/src/main/scala/tile). 
+Our devices are contained in the rocket-chip submodule, in [src/main/scala/tile/](https://github.com/MaddieBurbage/rocket-chip/tree/accelerators/src/main/scala/tile). 
 * The Ephelia accelerator is a simple example accelerator. 
 * MemTest is a simple test accelerator for the RoCC interface's mem system. 
 * Combinations can create several varieties of number-theoretic sequences: the [cool, cooler, and coolest orders](https://link.springer.com/article/10.1007/s00224-013-9486-8) designed by Brett Stevens and Aaron Williams, with cool implemented by Donald Knuth. 
